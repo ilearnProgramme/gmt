@@ -18,7 +18,7 @@
  * Brief synopsis: pssac will plot seismograms in SAC format on maps
  */
 
-/* 
+/*
 The SAC I/O functions are initially written by Prof. Lupei Zhu,
 and modified by Dongdong Tian.
 
@@ -304,7 +304,7 @@ GMT_LOCAL int parse (struct GMT_CTRL *GMT, struct PSSAC_CTRL *Ctrl, struct GMT_O
 				else if (j == 2) {
 					if (strcmp(txt_b, "s") == 0 ) {   /* -Msize/s */
 						// TODO
-					} 
+					}
 					else if (strcmp(txt_b, "b") == 0) {  /* -Msize/b */
 						// TODO
 					}
@@ -662,7 +662,7 @@ int GMT_pssac (void *V_API, int mode, void *args) {	/* High-level function that 
 
 	for (n = 0; n < (int)n_files; n++) {  /* Loop over all SAC files */
  		GMT_Report (API, GMT_MSG_LONG_VERBOSE, "Plotting SAC file %d: %s\n", n, L[n].file);
-		
+
 		/* -T: determine the reference time for all times in pssac */
 		tref = 0.0;
 		if (Ctrl->T.active) {
@@ -873,17 +873,6 @@ int GMT_pssac (void *V_API, int mode, void *args) {	/* High-level function that 
 			free_plot_pen = true;
 		}
 
-		/* plot trace */
-		if (L[n].custom_pen) {
-			current_pen = L[n].pen;
-			gmt_setpen (GMT, &L[n].pen);
-		}
-		gmt_plot_line (GMT, xp, yp, plot_pen, npts, current_pen.mode);
-		if (L[n].custom_pen) {
-			current_pen = Ctrl->W.pen;
-			gmt_setpen (GMT, &current_pen);
-		}
-
 		/* paint trace */
 		for (i = 0; i <= 1; i++) { /* 0=positive; 1=negative */
 			if (Ctrl->G.active[i]) {
@@ -916,6 +905,18 @@ int GMT_pssac (void *V_API, int mode, void *args) {	/* High-level function that 
 				paint_phase(GMT, Ctrl, PSL, x, y, hd.npts, zero, Ctrl->G.t0[i], Ctrl->G.t1[i], i);
 			}
 		}
+
+		/* plot trace */
+		if (L[n].custom_pen) {
+			current_pen = L[n].pen;
+			gmt_setpen (GMT, &L[n].pen);
+		}
+		gmt_plot_line (GMT, xp, yp, plot_pen, npts, current_pen.mode);
+		if (L[n].custom_pen) {
+			current_pen = Ctrl->W.pen;
+			gmt_setpen (GMT, &current_pen);
+		}
+
 		gmt_M_free(GMT, x);
 		gmt_M_free(GMT, y);
 		if (free_plot_pen) gmt_M_free(GMT, plot_pen);
